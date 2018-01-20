@@ -38,23 +38,24 @@ var tests = {
 };
 
 function test() {
+  var outbox = document.getElementById("testOutput");
   var passed = 0;
   var total = tests.tests.length;
   for(tn in tests.tests) {
     t = tests.tests[tn];
     got = md5_hex(t.input);
-    console.log("Input    : " + t.input);
-    console.log("Got      : " + got);
-    console.log("Expected : " + t.md5_expected);
+    outbox.innerHTML += ("Input    : " + t.input + "\n");
+    outbox.innerHTML += ("Got      : " + got + "\n");
+    outbox.innerHTML += ("Expected : " + t.md5_expected + "\n");
     if(got != t.md5_expected)
     {
-      console.log("Test failed :-(");
+      outbox.innerHTML += ("Test failed :-(" + "\n");
     } else {
-      console.log("Test passed!");
+      outbox.innerHTML += ("Test passed!" + "\n");
       passed++;
     }
   }
-  console.log("Passed "+ passed + " out of " + total + " tests.");
+  outbox.innerHTML += ("Passed "+ passed + " out of " + total + " tests."+ "\n");
 }
 
 //MD5
@@ -116,7 +117,7 @@ function md5(ba) {
   }
   ba.reset();
   var message_blocks = ba.size() / 64;
-  var state = []; 
+  var state = [];
   state[0] = md5_init_constants[0];
   state[1] = md5_init_constants[1];
   state[2] = md5_init_constants[2];
@@ -151,7 +152,7 @@ function md5(ba) {
         f = uint32xor(b,c,d);
         g = ((3 * j) + 5) % 16;
       } else {
-        f = uint32xor(c, 
+        f = uint32xor(c,
           uint32or(b, uint32not(d))
         );
         g = (7 * j) % 16;
@@ -204,7 +205,7 @@ function utf8_to_bin(s) { //Take a string and convert to Binarray
       ba.write(midbite);
       ba.write(midhibite);
       ba.write(hibite);
-      // Ignore surrogate pairs, because they're a mess. Seems to get it right 
+      // Ignore surrogate pairs, because they're a mess. Seems to get it right
       // with anything I've thrown at it.
       i++;
     } else {
@@ -291,10 +292,10 @@ function int32_to_binarray(n) {
 }
 
 /*
-Note: This is not a real int64 function. JS rounds numbers at 32 bits before 
+Note: This is not a real int64 function. JS rounds numbers at 32 bits before
 doing shifts, so we can't properly store an int64 without writing a helper function
 to perform the shifting. So we're going to fake it here, and use the same 32 bit code,
-except we're going to prepend 4 0x0 values. 
+except we're going to prepend 4 0x0 values.
 
 "But what if I want to use this for a message bigger than 2^32 bits?"
 
@@ -324,7 +325,7 @@ function binarray_to_int32(b) {
   b4 = b.read();
   a = uint32fromBytesBigEndian(b1,b2,b3,b4);
   return a;
-  
+
 }
 
 function binarray_to_hex_str(b) {
@@ -342,7 +343,7 @@ function binarray_to_hex_str(b) {
   return ret_str;
 }
 
-// A big collection of helper functions, because JavaScript can't handle the 
+// A big collection of helper functions, because JavaScript can't handle the
 // monumental task of computing with unsigned integers.
 
 function uint32fromBytesBigEndian(highByte, secondHighByte, thirdHighByte, lowByte) {
@@ -396,5 +397,3 @@ function uint32addMod32(uint32val0/*, ...*/) {
   }
   return result >>> 0;
 }
-
-
